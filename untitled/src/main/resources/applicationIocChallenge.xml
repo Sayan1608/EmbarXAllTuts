@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- bean definitions here -->
+
+    <bean id="databaseProvider" class="ioc.challenge.UserDatabaseProvider"/>
+
+    <bean id="webServiceProvider" class="ioc.challenge.WebServiceProvider"/>
+
+    <bean id="userManagerDb" class="ioc.challenge.UserManager">
+        <constructor-arg name="userDataProvider" ref="databaseProvider" />
+    </bean>
+
+    <bean id="userManagerWs" class="ioc.challenge.UserManager">
+        <constructor-arg name="userDataProvider" ref="webServiceProvider" />
+    </bean>
+
+</beans>
