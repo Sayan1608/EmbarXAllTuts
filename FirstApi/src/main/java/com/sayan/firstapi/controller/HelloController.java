@@ -1,13 +1,15 @@
 package com.sayan.firstapi.controller;
 
 import com.sayan.firstapi.response.HelloResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class HelloController {
+
+    @GetMapping(path = "/hello/{name}/show")
+    public HelloResponse helloPath(@PathVariable String name){
+        return new HelloResponse("Hello, "+name);
+    }
 
     @GetMapping(path = "/hello")
     public HelloResponse sayHello(){
