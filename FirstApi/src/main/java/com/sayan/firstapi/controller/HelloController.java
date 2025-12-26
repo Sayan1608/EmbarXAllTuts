@@ -1,5 +1,6 @@
 package com.sayan.firstapi.controller;
 
+import com.sayan.firstapi.response.HelloResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @GetMapping(path = "/hello")
-    public String sayHello(){
-        return "Hello World!";
+    public HelloResponse sayHello(){
+        return new HelloResponse("Hello World!");
     }
 
     @PostMapping(path = "/hello")
-    public String getPost(@RequestBody String name){
-        return "Hello "+name + "!";
+    public HelloResponse getPost(@RequestBody String name){
+        return new HelloResponse("Hello "+name + "!");
     }
 }
