@@ -36,12 +36,9 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public String deleteCategory(Long categoryId) {
-        List<Category> categoryList = categoryRepository.findAll();
-        Category category = categoryList
-                .stream().filter(c->c.getCategoryId().equals(categoryId))
-                .findFirst()
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Category with categoryId: "+ categoryId +" not found !!"));
+        Optional<Category> savedCategoryOptional = categoryRepository.findById(categoryId);
+        Category savedCategory = savedCategoryOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Category with categoryId: " + categoryId + " not found !!"));
 
         categoryRepository.deleteById(categoryId);
         return "Category with categoryId: " + categoryId +" deleted successfully !!";
@@ -49,19 +46,13 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Category updateCategory(Category category, Long categoryId) {
-        List<Category> categoryList = categoryRepository.findAll();
-        Optional<Category> optionalCategory = categoryList
-                .stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst();
+        Optional<Category> savedCategoryOptional = categoryRepository.findById(categoryId);
+        savedCategoryOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Category with categoryId: " + categoryId + " not found !!"));
+        Category savedCategory;
 
-        if(optionalCategory.isPresent()){
-            Category existingCategory = optionalCategory.get();
-            existingCategory.setCategoryName(category.getCategoryName());
-            return categoryRepository.save(existingCategory);
-        }else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Category with categoryId: "+ categoryId +" not found !!");
-        }
+        category.setCategoryId(categoryId);
+        savedCategory = categoryRepository.save(category);
+        return savedCategory;
     }
 }
