@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repository.CategoryRepository;
@@ -19,12 +20,16 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public List<Category> getAllCategories() {
-        return  categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        if(categories.isEmpty()) throw new APIException("No Categories Present!");
+        return categories;
     }
 
     @Override
     public void createNewCategory(Category category) {
 //        incrementCategoryId(category); // fixed hibernate state object exception
+        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(savedCategory != null) throw new APIException("Category with categoryName : " + category.getCategoryName() + " already exists!");
         categoryRepository.save(category);
     }
 
@@ -48,6 +53,8 @@ public class CategoryServiceImpl implements CategoryService{
         Optional<Category> savedCategoryOptional = categoryRepository.findById(categoryId);
         savedCategoryOptional
                 .orElseThrow(() -> new ResourceNotFoundException("category","categoryId",categoryId));
+        Category savedDBCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(savedDBCategory != null) throw new APIException("Category with categoryName : " + category.getCategoryName() + " already exists!");
         Category savedCategory;
 
         category.setCategoryId(categoryId);
