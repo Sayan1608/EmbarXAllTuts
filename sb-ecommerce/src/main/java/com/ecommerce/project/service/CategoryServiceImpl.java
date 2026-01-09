@@ -38,11 +38,13 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public void createNewCategory(Category category) {
+    public CategoryDTO createNewCategory(CategoryDTO categoryDTO) {
 //        incrementCategoryId(category); // fixed hibernate state object exception
+        Category category = modelMapper.map(categoryDTO, Category.class);
         Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
         if(savedCategory != null) throw new APIException("Category with categoryName : " + category.getCategoryName() + " already exists!");
-        categoryRepository.save(category);
+        Category persistedCategory = categoryRepository.save(category);
+        return modelMapper.map(persistedCategory, CategoryDTO.class);
     }
 
     @Override
@@ -61,16 +63,17 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public Category updateCategory(Category category, Long categoryId) {
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId) {
         Optional<Category> savedCategoryOptional = categoryRepository.findById(categoryId);
         savedCategoryOptional
                 .orElseThrow(() -> new ResourceNotFoundException("category","categoryId",categoryId));
+        Category category = modelMapper.map(categoryDTO, Category.class);
         Category savedDBCategory = categoryRepository.findByCategoryName(category.getCategoryName());
         if(savedDBCategory != null) throw new APIException("Category with categoryName : " + category.getCategoryName() + " already exists!");
         Category savedCategory;
 
         category.setCategoryId(categoryId);
         savedCategory = categoryRepository.save(category);
-        return savedCategory;
+        return modelMapper.map(savedCategory,CategoryDTO.class);
     }
 }
