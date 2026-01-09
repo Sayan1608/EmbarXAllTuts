@@ -29,9 +29,9 @@ public class CategoryController {
     }
 
     @DeleteMapping(path = "/api/admin/categories/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable(name = "categoryId") Long categoryId){
-            String status = categoryService.deleteCategory(categoryId);
-            return ResponseEntity.ok(status);
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable(name = "categoryId") Long categoryId){
+            CategoryDTO categoryDTO =  categoryService.deleteCategory(categoryId);
+            return ResponseEntity.ok(categoryDTO);
     }
 
     @PutMapping(path = "/api/admin/categories/{categoryId}")
