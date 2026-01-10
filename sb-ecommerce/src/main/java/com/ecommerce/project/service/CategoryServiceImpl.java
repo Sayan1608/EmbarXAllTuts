@@ -39,6 +39,11 @@ public class CategoryServiceImpl implements CategoryService{
 
         CategoryResponse content = new CategoryResponse();
         content.setContent(categoryDTOList);
+        content.setPageNumber(categoryPage.getNumber());
+        content.setPageSize(categoryPage.getSize());
+        content.setTotalElements(categoryPage.getTotalElements());
+        content.setTotalPages(categoryPage.getTotalPages());
+        content.setLastPage(categoryPage.isLast());
         return content;
     }
 
