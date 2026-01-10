@@ -19,6 +19,12 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+    @GetMapping("/echo")
+    public ResponseEntity<String> echoMessage(@RequestParam(name = "message", required = false) String message) {
+//    public ResponseEntity<String> echoMessage(@RequestParam(name = "message", defaultValue = "default message!") String message) {
+        return ResponseEntity.ok("Echo: " + message);
+    }
+
     // create new Customer
     @PostMapping(path = "/customers")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer){
