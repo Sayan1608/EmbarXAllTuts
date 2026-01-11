@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -18,4 +22,7 @@ public class User {
     @OneToOne
     @JoinColumn(name = "social_profile_id", referencedColumnName = "id")
     private Profile profile;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new LinkedList<>();
 }
