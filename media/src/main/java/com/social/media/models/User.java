@@ -31,4 +31,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     private Set<Group> groups = new HashSet<>();
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
