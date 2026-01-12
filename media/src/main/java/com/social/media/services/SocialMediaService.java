@@ -1,8 +1,10 @@
 package com.social.media.services;
 
+import com.social.media.models.Profile;
 import com.social.media.models.User;
 import com.social.media.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,12 @@ public class SocialMediaService {
     }
 
     public User saveUser(User user) {
-        return userRepository.save(user);
+        Profile profile = user.getProfile();
+        if (profile != null && profile.getUser() != user) {
+            // ensure owning side is set before persist
+            profile.setUser(user);
+        }
+        User saved = userRepository.save(user);
+        return saved;
     }
 }

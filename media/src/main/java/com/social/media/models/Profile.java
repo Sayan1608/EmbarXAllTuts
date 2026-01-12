@@ -1,6 +1,7 @@
 package com.social.media.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.social.media.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +15,12 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(mappedBy = "profile")
-//    @JoinColumn(name = "social_user_id", referencedColumnName = "id")
+
+    private String description;
+
+    // owning side - add JoinColumn so FK is stored here
+    @OneToOne
+    @JoinColumn(name = "social_user_id", referencedColumnName = "id")
     @JsonIgnore
     private User user;
 
