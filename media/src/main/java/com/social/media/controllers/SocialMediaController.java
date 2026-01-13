@@ -28,4 +28,12 @@ public class SocialMediaController {
         // Implementation goes here
         return ResponseEntity.status(HttpStatus.CREATED).body(socialMediaService.saveUser(user));
     }
+
+    // create New User
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        // Implementation goes here
+        socialMediaService.deleteUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully");
+    }
 }

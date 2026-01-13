@@ -4,7 +4,6 @@ import com.social.media.models.Profile;
 import com.social.media.models.User;
 import com.social.media.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,5 +24,10 @@ public class SocialMediaService {
         }
         User saved = userRepository.save(user);
         return saved;
+    }
+
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        userRepository.delete(user);
     }
 }

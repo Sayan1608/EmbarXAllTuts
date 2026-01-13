@@ -101,6 +101,8 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.save(user2);
         userRepository.save(user3);
 
+        System.out.println("Fetch Users");
+        userRepository.findById(1L);
 
 
     }
