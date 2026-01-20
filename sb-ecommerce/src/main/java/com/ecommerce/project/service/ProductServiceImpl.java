@@ -10,15 +10,12 @@ import com.ecommerce.project.repository.ProductRepository;
 import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -26,7 +23,13 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
 
     @Autowired
+    private FileService fileService;
+
+    @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${product.image.upload.dir}")
+    private String path;
 
     public ProductServiceImpl(CategoryService categoryService, CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
@@ -126,8 +129,8 @@ public class ProductServiceImpl implements ProductService{
         // get the product from db
         Product productFromDb = findProductById(productId);
         // upload the file to folder and get the file name
-        String path = "images/products/";
-        String fileName = uploadProductImage(path,file);
+
+        String fileName = fileService.uploadProductImage(path,file);
         // set the file name to product
         productFromDb.setImage(fileName);
         // update the product in db
@@ -135,24 +138,5 @@ public class ProductServiceImpl implements ProductService{
         return modelMapper.map(updatedProduct, ProductDTO.class);
     }
 
-    private String uploadProductImage(String path, MultipartFile file) throws IOException {
-        // File names of the current/ original file
-        String originalFileName = file.getOriginalFilename();
-        // generate a random file name
-        String randomFileName = UUID.randomUUID().toString();
-        String fileName = null;
-        if (originalFileName != null) {
-            fileName = randomFileName.concat(originalFileName.substring(originalFileName.lastIndexOf(".")));
-        }
-        String fullPath = path + File.separator + fileName;
-        // Check if the directory exists or not
-        File dir = new File(path);
-        if(!dir.exists()){
-            dir.mkdirs();
-        }
-        // upload the file to the folder
-        Files.copy(file.getInputStream(), Paths.get(fullPath));
 
-        return fileName;
-    }
 }
