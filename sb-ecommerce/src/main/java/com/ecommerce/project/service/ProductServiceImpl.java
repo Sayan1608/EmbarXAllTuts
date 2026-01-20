@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
@@ -41,6 +42,8 @@ public class ProductServiceImpl implements ProductService{
         Category category = findCategoryById(categoryId);
 
         Product product = modelMapper.map(productDTO, Product.class);
+        Product productWithSameName = productRepository.findByProductNameAndCategory(product.getProductName(), category);
+        existProductByName(productWithSameName, product);
         product.setImage("default.png");
         product.setCategory(category);
         product.setSpecialPrice(product.getPrice() - (product.getPrice() * product.getDiscount() / 100));
@@ -62,6 +65,7 @@ public class ProductServiceImpl implements ProductService{
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
 
+        if(productDTOList.isEmpty()) throw new APIException("No Products Present!");
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOList);
         return productResponse;
@@ -76,7 +80,7 @@ public class ProductServiceImpl implements ProductService{
                 .stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
-
+        if (productDTOList.isEmpty()) throw new APIException("No Products Present in Category : " + category.getCategoryName());
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOList);
         return productResponse;
@@ -89,7 +93,7 @@ public class ProductServiceImpl implements ProductService{
                 .stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
-
+        if (productDTOList.isEmpty()) throw new APIException("No Products Present with keyword : " + keyword);
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOList);
         return productResponse;
@@ -98,6 +102,8 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductDTO updateProduct(ProductDTO productDTO, Long productId) {
         Product productDb = findProductById(productId);
+        Product productWithSameName = productRepository.findByProductNameAndCategory(productDTO.getProductName(), productDb.getCategory());
+        existProductByName(productWithSameName, productDb);
 
         productDb.setProductName(productDTO.getProductName());
         productDb.setDescription(productDTO.getDescription());
@@ -136,6 +142,10 @@ public class ProductServiceImpl implements ProductService{
         // update the product in db
         Product updatedProduct = productRepository.save(productFromDb);
         return modelMapper.map(updatedProduct, ProductDTO.class);
+    }
+
+    public void existProductByName(Product savedProduct, Product product) {
+        if(savedProduct != null) throw new APIException("Product with productName : " + product.getProductName() + " already exists!");
     }
 
 
