@@ -108,6 +108,7 @@ public class ProductServiceImpl implements ProductService{
         Sort sortByAndOrder = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
         Page<Product> productsPage = productRepository.findByProductNameLikeIgnoreCase('%'+keyword+'%', pageable);
+
         List<ProductDTO> productDTOList = productsPage.getContent()
                 .stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
